@@ -73,7 +73,7 @@ class BinarySearchTree {
 	}
 
 	find(data) {
-		let nextNode = this.rootTree;
+		let nextNode = this.head;
 		while (nextNode){
 			if (data > nextNode.data) {
 				nextNode = nextNode.rigthNode;
@@ -81,115 +81,52 @@ class BinarySearchTree {
 			else if (data < nextNode.data) {
 				nextNode = nextNode.leftNode;
 			}
-			if (data === nextNode.data) return nextNode; // !
+			else if (data === nextNode.data) return nextNode; // !
 		}
 		return null;
 	}
 
 	remove(data) {
-		let nextNode = this.rootTree;
-		let prevNode = null;
-		let removedNode = null;
-		while (nextNode){
-			if (data > nextNode.data) {
-				prevNode = nextNode;
-				nextNode = nextNode.rigthNode;
-			}
-			else if (data < nextNode.data) {
-				prevNode = nextNode;
-				nextNode = nextNode.leftNode;
-			}
-			else if (data === nextNode.data)  {
-				removedNode = nextNode;
-				break;
-			}
-		}
-		console.log(`removed Node = ${JSON.stringify(removedNode)} `);
+		this.rootTree = removeNode(this.rootTree , data);
 
-		if (!removedNode)
-			return;
-
-		// if node has not a child;	
-		if (!removedNode.leftNode && !removedNode.rigthNode) { 
-
-			if (prevNode.leftNode === removedNode) {
-				prevNode.leftNode = null;
-				removedNode = null;
+		function removeNode(node, data) {
+			if(!node) {
+				return null;
 			}
-			if (prevNode.rigthNode === removedNode) {
-				prevNode.rigthNode = null;
-				removedNode = null;
-			}
-			return ;
-		}
 
-		// if node has both a child;	
-		else if (removedNode.leftNode && removedNode.rigthNode) {
-
-			let nextNode = removedNode.rigthNode
-			let min = nextNode.data;
-			//console.log(`min = ${JSON.stringify(nextNode.data)}`);
-			let minNode = nextNode;
-			let minPrevNode = nextNode;
-			while (nextNode){
-				if (min > nextNode.data) {
-					min = nextNode.data;
-					minNode = nextNode;
+			if (data < node.data) {
+				node.leftNode = removeNode(node.leftNode, data);
+				return node;
+			} else if (data > node.data) {
+				node.rigthNode = removeNode(node.rigthNode, data);
+				return node;
+			} else {
+				if (!node.leftNode && !node.rigthNode) {
+					return null;
 				}
-				nextNode = nextNode.leftNode;
-			}
-			
-			console.log(`minNode = ${JSON.stringify(minNode)}`);
-			
-			//set links on new places {insted removed,node};
-			minNode.rigthNode = removedNode.rigthNode;
-			minNode.leftNode = removedNode.leftNode;
-			minPrevNode.leftNode = null; //! minPrevNode
-			
 
-			if (!prevNode) {
-				this.rootTree = minNode;
-				this.head = minNode;
-				return this;
-			}
-			else if (prevNode.rigthNode === removedNode) {
-				//console.log(`removedNode is a rigthNode in a prevNode`);
-				removedNode = null; 
-				prevNode.rigthNode = minNode
-			}
-			else if (prevNode.leftNode === removedNode) {
-				//console.log(`removedNode is a leftNode in a prevNode`);
-				removedNode = null; 
-				prevNode.leftNode = minNode
-			} 
-			//console.log(`prevNode = ${JSON.stringify(prevNode)}`);
-			return ;
-		}
+				if (!node.leftNode) {
+					node = node.rigthNode;
+					return node;
+				}
 
-		// if node has just one a child;	
-		else {
+				if (!node.rigthNode) {
+					node = node.leftNode;
+					return node;
+				}
 
-			if (prevNode.leftNode === removedNode) {
-				if (removedNode.leftNode) {
-					prevNode.leftNode = removedNode.leftNode;
+				let minRightNode = node.rigthNode;
+
+				while (minRightNode.leftNode) {
+					minRightNode = minRightNode.leftNode;
 				}
-			
-				else if (removedNode.rigthNode) {
-					prevNode.leftNode = removedNode.rigthNode;
-				}
-				removedNode = null;
+
+				node.data = minRightNode.data;
+
+				node.rigthNode = removeNode(node.rigthNode, minRightNode.data);
+
+				return node;
 			}
-			if (prevNode.rigthNode === removedNode) {
-				if (removedNode.leftNode) {
-					prevNode.rigthNode = removedNode.leftNode;
-				}
-			
-				else if (removedNode.rigthNode) {
-					prevNode.rigthNode = removedNode.rigthNode;
-				}
-				removedNode = null;
-			}
-			return ;
 		}
 		
 	}
@@ -235,16 +172,57 @@ tree.add(8);
 tree.add(31);
 tree.add(54);
 tree.add(1);
-console.log(`output: \n ${tree.toJSON()}`)
+tree.toJSON();
+tree.remove(14);
+tree.toJSON();
+tree.remove(8);
+tree.toJSON();
+tree.remove(9);
+tree.toJSON();
+console.log(`tree.has(14) = ${tree.has(14)}, false`);
+console.log(`tree.has(8) = ${tree.has(8)}, false`);
+console.log(`tree.has(9) = ${tree.has(9)}, false`);
+console.log(`tree.has(2) = ${tree.has(2)}, true`);
+console.log(`tree.has(6) = ${tree.has(6)}, true`);
+console.log(`tree.has(128) = ${tree.has(128)}, true`);
+console.log(`tree.has(31) = ${tree.has(31)}, true`);
+console.log(`tree.has(54) = ${tree.has(54)}, true`);
+console.log(`tree.has(1) = ${tree.has(1)}, true`);
 
-console.log(`remove(14):\n  ${tree.remove(14)} \n ${tree.toJSON()}`)
-//tree.remove(8);
-console.log(`remove(8): \n ${tree.remove(8)} \n ${tree.toJSON()}`)
-//tree.remove(9);
-console.log(`remove(9):\n  ${tree.remove(9)} \n ${tree.toJSON()}`)
-console.log(tree.has(14));
-console.log(tree.has(8));
-console.log(tree.has(9));
-console.log(tree.has(54));
+// const tree = new BinarySearchTree();
+// tree.add(2);
+// tree.add(7);
+// tree.add(1);
+// tree.add(8);
+// tree.add(4);
+// tree.add(32);
+// tree.add(12);
+// tree.add(14);
+// console.log(tree.find(33));
+
+// const tree = new BinarySearchTree();
+// tree.add(9);
+// tree.add(14);
+// tree.add(2);
+// tree.add(6);
+// tree.add(128);
+// tree.add(8);
+// tree.add(31);
+// tree.add(54);
+// tree.add(1);
+// tree.toJSON();
+// tree.remove(14);
+// tree.toJSON()
+// tree.remove(8);
+// tree.toJSON()
+// tree.remove(9);
+// tree.toJSON()
+// // console.log(tree.has(8));
+// // console.log(tree.has(9));
+// // console.log(tree.has(54));
+// console.log(tree.has(14));
+// console.log(tree.has(8));
+// console.log(tree.has(9));
+// console.log(tree.has(2));
 // console.log(tree.has(8));
 // console.log(tree.root());
