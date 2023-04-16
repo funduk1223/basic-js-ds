@@ -94,27 +94,31 @@ class BinarySearchTree {
 				return null;
 			}
 
+			// find node with input data;
 			if (data < node.data) {
 				node.leftNode = removeNode(node.leftNode, data);
 				return node;
 			} else if (data > node.data) {
 				node.rigthNode = removeNode(node.rigthNode, data);
 				return node;
-			} else {
+			} else { // get node with input data;
+				// if node has not a child;
 				if (!node.leftNode && !node.rigthNode) {
 					return null;
 				}
-
+				// if node hasn't left child get right;
 				if (!node.leftNode) {
 					node = node.rigthNode;
 					return node;
 				}
-
+				
+				// if node hasn't right child get left;
 				if (!node.rigthNode) {
 					node = node.leftNode;
 					return node;
 				}
 
+				//find min node in right branch from removed node;
 				let minRightNode = node.rigthNode;
 
 				while (minRightNode.leftNode) {
@@ -161,68 +165,3 @@ class BinarySearchTree {
 module.exports = {
 	BinarySearchTree
 };
-
-const tree = new BinarySearchTree();
-tree.add(9);
-tree.add(14);
-tree.add(2);
-tree.add(6);
-tree.add(128);
-tree.add(8);
-tree.add(31);
-tree.add(54);
-tree.add(1);
-tree.toJSON();
-tree.remove(14);
-tree.toJSON();
-tree.remove(8);
-tree.toJSON();
-tree.remove(9);
-tree.toJSON();
-console.log(`tree.has(14) = ${tree.has(14)}, false`);
-console.log(`tree.has(8) = ${tree.has(8)}, false`);
-console.log(`tree.has(9) = ${tree.has(9)}, false`);
-console.log(`tree.has(2) = ${tree.has(2)}, true`);
-console.log(`tree.has(6) = ${tree.has(6)}, true`);
-console.log(`tree.has(128) = ${tree.has(128)}, true`);
-console.log(`tree.has(31) = ${tree.has(31)}, true`);
-console.log(`tree.has(54) = ${tree.has(54)}, true`);
-console.log(`tree.has(1) = ${tree.has(1)}, true`);
-
-// const tree = new BinarySearchTree();
-// tree.add(2);
-// tree.add(7);
-// tree.add(1);
-// tree.add(8);
-// tree.add(4);
-// tree.add(32);
-// tree.add(12);
-// tree.add(14);
-// console.log(tree.find(33));
-
-// const tree = new BinarySearchTree();
-// tree.add(9);
-// tree.add(14);
-// tree.add(2);
-// tree.add(6);
-// tree.add(128);
-// tree.add(8);
-// tree.add(31);
-// tree.add(54);
-// tree.add(1);
-// tree.toJSON();
-// tree.remove(14);
-// tree.toJSON()
-// tree.remove(8);
-// tree.toJSON()
-// tree.remove(9);
-// tree.toJSON()
-// // console.log(tree.has(8));
-// // console.log(tree.has(9));
-// // console.log(tree.has(54));
-// console.log(tree.has(14));
-// console.log(tree.has(8));
-// console.log(tree.has(9));
-// console.log(tree.has(2));
-// console.log(tree.has(8));
-// console.log(tree.root());
